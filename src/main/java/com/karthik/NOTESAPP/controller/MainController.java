@@ -41,10 +41,10 @@ public class MainController {
         String username = auth.getName();
         User user = userService.findUser(username);
         Note originalnote = null;
-        Optional<Note> presentnote = noteservice.findnoteById(id);
-        if(presentnote.isPresent())
+        Optional<Note> presentnot = noteservice.findnoteById(id);
+        if(presentnot.isPresent())
         {
-             originalnote = presentnote.get();
+             originalnote = presentnot.get();
 
         }
         else{
