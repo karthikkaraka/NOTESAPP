@@ -6,6 +6,9 @@ import com.karthik.NOTESAPP.model.User;
 import com.karthik.NOTESAPP.service.NoteService;
 import com.karthik.NOTESAPP.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -18,14 +21,14 @@ public class MainController {
     @Autowired
     UserService userService;
     @PostMapping("createnote")
-    public String createnote(Authentication auth, @RequestBody Note note)
+    public ResponseEntity<String> createnote(Authentication auth, @RequestBody Note note)
     {
         String userName = auth.getName();
         User user = userService.findUser(userName);
         System.out.println(user.getUserName());
         note.setUser(user);
         noteservice.savenote(note);
-        return note.getContent();
+        return new ResponseEntity<>(note.getContent(), HttpStatus.CREATED);
     }
     @GetMapping("getallnotes")
     public List<Note> getallNotes(Authentication auth)
