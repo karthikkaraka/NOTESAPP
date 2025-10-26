@@ -15,6 +15,12 @@ import java.util.List;
 import java.util.Optional;
 @RestController
 @RequestMapping("api/notesapp")
+@CrossOrigin(
+        origins = "http://localhost:5173",
+        allowedHeaders = "*",
+        allowCredentials = "true",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}
+)
 public class MainController {
     @Autowired
     private NoteService noteservice;
@@ -28,7 +34,7 @@ public class MainController {
         System.out.println(user.getUserName());
         note.setUser(user);
         noteservice.savenote(note);
-        return new ResponseEntity<>(note.getContent(), HttpStatus.CREATED);
+        return new ResponseEntity<>(note.getTitle(), HttpStatus.CREATED);
     }
     @GetMapping("getallnotes")
     public List<Note> getallNotes(Authentication auth)
@@ -70,5 +76,26 @@ public class MainController {
         String username = auth.getName();
         User user =userService.findUser(username);
          return noteservice.deletenote(user,id);
+    }
+    @GetMapping("/findnote/title/{title}")
+    public ResponseEntity<Note>findNoteByTitle(@PathVariable String title){
+        Note notes = noteservice.findNoteBytitle(title);
+        if(notes!=null){
+            return new ResponseEntity<>(notes,HttpStatus.ACCEPTED) ;
+        }
+      else{
+          return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @GetMapping("findnote/{id}")
+    public ResponseEntity<Note> findNoteById(@PathVariable long id){
+        Optional<Note> note =  noteservice.findnoteById(id);
+        Note orinote = new Note();
+        if(note.isPresent()) {
+            orinote = note.get();
+        }else{
+            orinote = null;
+        }
+         return new ResponseEntity<>(orinote,HttpStatus.OK);
     }
 }

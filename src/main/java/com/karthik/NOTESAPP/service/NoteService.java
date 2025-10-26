@@ -46,4 +46,10 @@ public class NoteService {
            return "not deleted...failure";
        }
     }
+
+    public Note findNoteBytitle(String title) {
+       Note note =  noteRepo.findBytitle(title);
+        System.out.println(note);
+       return note;
+    }
 }
